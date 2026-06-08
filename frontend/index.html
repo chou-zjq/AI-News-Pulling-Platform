@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 AI 新闻调取平台</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- GSAP 动画引擎 -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <!-- Markdown 渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <!-- Toast 通知容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ═══ 顶栏 ═══ -->
+    <header class="top-bar" data-anim="topbar">
+        <div class="top-bar-left">
+            <h1 class="app-title">
+                <span class="title-emoji">🤖</span>
+                <span>AI 新闻调取平台</span>
+            </h1>
+            <span class="current-date" id="currentDate">— 加载中...</span>
+        </div>
+        <div class="top-bar-right">
+            <button class="btn-settings" id="btnSettings" data-anim="settings-btn">
+                <span class="btn-icon">⚙️</span>
+                <span id="currentLLM">未配置</span>
+            </button>
+            <button class="btn-fetch" id="btnFetch" data-anim="fetch-btn">
+                <span class="btn-icon">🔍</span>
+                <span>查询今日 AI 新闻</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ═══ 主体 ═══ -->
+    <div class="main-container">
+        <!-- 左侧：历史记录 -->
+        <aside class="sidebar" id="sidebar" data-anim="sidebar">
+            <h3 class="sidebar-title">📋 历史记录</h3>
+            <div class="history-tree" id="historyTree">
+                <p class="empty-hint">加载中...</p>
+            </div>
+        </aside>
+
+        <!-- 右侧：内容区 -->
+        <main class="content" id="content">
+            <!-- 状态：初始 -->
+            <div class="state-empty" id="stateEmpty" data-anim="content">
+                <div class="empty-icon-wrapper">
+                    <span class="empty-icon">📰</span>
+                    <div class="empty-icon-ring"></div>
+                </div>
+                <p class="empty-title">AI 新闻日报</p>
+                <p class="empty-desc">点击下方按钮，自动从 NewsAPI 和 GitHub 抓取最新 AI 资讯</p>
+                <div class="empty-features">
+                    <span>🔬 新功能发布</span>
+                    <span>🚀 新平台上线</span>
+                    <span>🛠 好用工具</span>
+                    <span>📦 GitHub 项目</span>
+                </div>
+            </div>
+
+            <!-- 状态：加载中 -->
+            <div class="state-loading" id="stateLoading" style="display:none;" data-anim="loading">
+                <div class="loader">
+                    <div class="loader-ring"></div>
+                    <div class="loader-dot"></div>
+                </div>
+                <p class="loading-text">正在从多个数据源获取新闻...</p>
+                <p class="loading-detail" id="loadingDetail">连接 NewsAPI...</p>
+                <div class="loading-sources">
+                    <span class="source-badge" id="sourceBadgeNewsAPI">NewsAPI</span>
+                    <span class="source-badge" id="sourceBadgeGitHub">GitHub</span>
+                </div>
+            </div>
+
+            <!-- 状态：已加载 -->
+            <div class="state-loaded" id="stateLoaded" style="display:none;" data-anim="loaded">
+                <div class="result-header">
+                    <span class="result-badge" id="resultBadge"></span>
+                    <button class="btn-view-record" id="btnViewRecord">
+                        📝 查看完整记录本
+                    </button>
+                </div>
+                <div class="news-list" id="newsList"></div>
+            </div>
+
+            <!-- 状态：错误 -->
+            <div class="state-error" id="stateError" style="display:none;" data-anim="error">
+                <div class="error-icon-wrapper">
+                    <span class="error-icon">⚠️</span>
+                </div>
+                <p class="error-message" id="errorMessage"></p>
+                <button class="btn-retry" onclick="fetchNews()">🔄 重试</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- ═══ 记录本查看模态框 ═══ -->
+    <div class="modal-overlay" id="modalOverlay" style="display:none;">
+        <div class="modal" id="modalPanel">
+            <div class="modal-header">
+                <h2 id="modalTitle">📝 记录本</h2>
+                <button class="modal-close" id="btnModalClose">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <div class="modal-loading">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ KeyBox 设置面板 ═══ -->
+    <div class="modal-overlay" id="keyboxOverlay" style="display:none;">
+        <div class="modal keybox-modal" id="keyboxPanel">
+            <div class="modal-header">
+                <h2>🔑 API Key 管理</h2>
+                <button class="modal-close" id="btnKeyboxClose">&times;</button>
+            </div>
+            <div class="modal-body" id="keyboxBody">
+                <div class="modal-loading">加载中...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="components/key-manager.js"></script>
+</body>
+</html>
