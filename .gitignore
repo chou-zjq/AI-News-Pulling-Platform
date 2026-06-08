@@ -36,3 +36,7 @@ Desktop.ini
 # ── 临时文件 ─────────────────────────────────
 *.tmp
 *.log
+_*.py
+_*.ps1
+check_db.py
+test_api.ps1
